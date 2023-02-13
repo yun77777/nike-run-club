@@ -10,15 +10,40 @@ const RunScreen = () => {
   const [metricValueError, setMetricValueError] = useState(false)
   const [metricColor, setMetricColor] = useState('black')
 
+  const [toggle, setToggle] = useState('Distance')
+  const [metricUnit, setMetricUnit] = useState('Kilometers')
+
+
   const changeMetricValueHandler = input => {
-    if(!validateInput(input)) {
-      console.log('wrong -> ', Math.random(1))
-      setMetricValueError(true)
-    } else {
-      console.log('@ -> ', input)
-      setMetricValueError(false)
+    if(validateInput(input, toggle)) {
+      if(input[0] == '.' || input[0] == ':')
+       input = '0' + input
+      if(input[input.length -1 ] == '.' || input[input.length -1 ] == ':')
+       input = input + '0'
+
+       setMetricValue(input)
     }
-    setMetricValue(input)
+
+    // if(!validateInput(input)) {
+    //   console.log('wrong -> ', Math.random(1))
+    //   setMetricValueError(true)
+    // } else {
+    //   console.log('@ -> ', input)
+    //   setMetricValueError(false)
+    // }
+    // setMetricValue(input)
+  }
+
+  const toggleHandler = () => {
+    if(toggle == 'Distance') {
+      setToggle('Time')
+      setMetricUnit('Hours:Minutes')
+      setMetricValue('01:00')
+    } else {
+      setToggle('Distance')
+      setMetricUnit('Kilometers')
+      setMetricValue('1.0')
+    }
   }
 
   useEffect(()=>{
@@ -41,7 +66,7 @@ const RunScreen = () => {
         onChangeText={changeMetricValueHandler}
         />
         {/* <View style={styles.metricUnderLine}></View> */}
-        <Text style={styles.metricUnit}>Kilometer</Text>
+        <Text style={styles.metricUnit}>{metricUnit}</Text>
       </Pressable>
 
       {/* Start Button */}
@@ -58,10 +83,10 @@ const RunScreen = () => {
        
 
         <Pressable 
-        onPress={()=>console.warn('Toggling')}
+        onPress={toggleHandler}
         style={styles.toggleContainer}>
           {/* Pressable Button */}
-          <Text style={styles.toggleTitle}>Distance</Text>
+          <Text style={styles.toggleTitle}>{toggle}</Text>
       </Pressable>
       </View>
       {/* Toggle button to change the metric from distance or time */}
